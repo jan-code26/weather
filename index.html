@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Weather</title>
+    <meta name="description" content="weather">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <br>
+    <div class="container">
+        <div class="jumbotron">
+            <div class="  row">
+                <div class="col-4">
+                    <form class="form-inline">
+                        <h6>Select city </h6>
+                        <h6><select id="myList" onchange="myFunction()">
+                                <option></option>
+                                <option>Hyderabad</option>
+                                <option>Mumbai</option>
+                                <option>Chennai </option>
+                                <option>Kolkata</option>
+                            </select></h6>
+                        <br>
+                    </form>
+                    <h6 id="demo"></h6>
+
+                    <h6 id="demo1"></h6>
+
+                </div>
+                <div class="col-4">
+                    temp<h2 id="temp"></h2>
+                    weather<h2 id="weather"> </h2>
+                    <img id="myimg" src="https://openweathermap.org/img/w/50d.png">
+                </div>
+                <div class="col-4">
+                    humidity<h2 id="humidity"> </h2>
+                    wind speed<h2 id="windspeed"></h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const d = new Date();
+        document.getElementById("demo1").innerHTML = d.toDateString();
+
+        function myFunction() {
+            var mylist = document.getElementById("myList");
+            document.getElementById("demo").innerHTML = mylist.options[mylist.selectedIndex].text;
+            var x = mylist.options[mylist.selectedIndex].text;
+            var request = new XMLHttpRequest();
+            request.open("GET", "https://api.openweathermap.org/data/2.5/weather?q=" + mylist.options[mylist.selectedIndex].text + "&appid=93f26e3c57081a6210de53b8dcfdfea4", true);
+            request.onload = function () {
+                if (request.status >= 200 && request.status < 400) {
+                    var data = JSON.parse(request.responseText);
+                    console.log(data);
+                    document.getElementById('temp').innerHTML = data.main.temp + "°C";
+                    document.getElementById('weather').innerHTML = data.weather[0].description;
+                    var icon = data.weather[0].icon + ".png";
+                    document.getElementById('myimg').src = "https://openweathermap.org/img/w/" + icon;
+                    document.getElementById('humidity').innerHTML = data.main.humidity + "%";
+                    document.getElementById('windspeed').innerHTML = data.wind.speed + " km/j";
+                }
+                else {
+                    console.log("some error");
+                }
+            };
+            request.onerror = function () {
+                console.log("connection error");
+            };
+            request.send();
+        }
+    </script>
+</body>
+
+</html>
